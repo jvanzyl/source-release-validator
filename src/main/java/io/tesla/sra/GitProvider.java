@@ -1,4 +1,4 @@
-package io.tesla.sebbalizer;
+package io.tesla.sra;
 
 import java.io.File;
 import java.io.IOException;
