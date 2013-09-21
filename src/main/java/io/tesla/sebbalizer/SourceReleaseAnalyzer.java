@@ -22,17 +22,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 import com.google.common.io.ByteStreams;
 
-//
-//  - source bundle                                                                                                                                         
-//  - source bundle shal1                                                                                                                                   
-//  - sha1 of release                                                                                                                                       
-//                                                                                                                                                          
-//  - grab bundle                                                                                                                                           
-//  - unpack bundle                                                                                                                                         
-//  - grab source revision                                                                                                                                  
-//  - compare unpacked bundle to source revision     
-//
-public class Sebbalizer {
+public class SourceReleaseAnalyzer {
 
   private String groupId;
   private String artifactId;
@@ -40,7 +30,7 @@ public class Sebbalizer {
   private String stagingUrl;
   private File temp;
 
-  public Sebbalizer(String groupId, String artifactId, String version, String stagingUrl) {
+  public SourceReleaseAnalyzer(String groupId, String artifactId, String version, String stagingUrl) {
     this.groupId = groupId;
     this.artifactId = artifactId;
     this.version = version;
@@ -73,7 +63,7 @@ public class Sebbalizer {
     String binZipUrl = String.format("%s-%s", baseUrl, "bin.zip");
     String binZipSha1Url = String.format("%s-%s", baseUrl, "bin.zip.sha1");
 
-    System.out.println("Sebbalizing...");
+    System.out.println("Analyzer...");
     System.out.println();
     System.out.println("stagingUrl: " + stagingUrl);
     System.out.println("groupId: " + groupId);
@@ -298,7 +288,7 @@ public class Sebbalizer {
 
   public static void main(String[] args) throws Exception {
     String url2 = "https://repository.apache.org/content/repositories/maven-065/";
-    Sebbalizer s = new Sebbalizer("org.apache.maven", "apache-maven", "3.1.1", url2);
+    SourceReleaseAnalyzer s = new SourceReleaseAnalyzer("org.apache.maven", "apache-maven", "3.1.1", url2);
     s.sebbalize();
   }
 }

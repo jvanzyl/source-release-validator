@@ -1,4 +1,4 @@
-# Sebbalizer: The Apache Maven Source Archive Validator
+# Source Release Validator
 
 This tool, for the moment, is a source archive validator for Apache Maven core releases.
 
@@ -12,7 +12,7 @@ With the inputs of a staging repository URL, groupId, artifactId, and version we
 A sample run looks like the following:
 
 ```
-Sebbalizing...
+Analyzing...
 
 stagingUrl: https://repository.apache.org/content/repositories/maven-065
 groupId: org.apache.maven
