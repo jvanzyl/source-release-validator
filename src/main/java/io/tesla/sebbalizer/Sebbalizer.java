@@ -138,12 +138,12 @@ public class Sebbalizer {
     File mavenBinaryDirectory = new File(temp, "binary");
     // /tmp/binary/apache-maven-3.1.1
     unpackZipFile(binZip, mavenBinaryDirectory);
-    
+
     // /tmp/source
     File mavenSourceArchiveUnpackDirectory = new File(temp, "source");
     unpackZipFile(sourceZip, mavenSourceArchiveUnpackDirectory);
     // /tmp/source/apache-maven-3.1.1
-    File mavenSourceArchiveDirectory = new File(mavenSourceArchiveUnpackDirectory, String.format("%s-%s", artifactId, version));    
+    File mavenSourceArchiveDirectory = new File(mavenSourceArchiveUnpackDirectory, String.format("%s-%s", artifactId, version));
 
     ZipFile mavenCore = new ZipFile(new File(mavenBinaryDirectory, String.format("%s-%s/lib/maven-core-%s.jar", artifactId, version, version)));
     Properties p = new Properties();
@@ -167,39 +167,43 @@ public class Sebbalizer {
     //
     // Compare each entry in the source archive to make sure it is present in the release revision 
     //
-    List<String> filesThatDoNotExistInGitRevision = new ArrayList<String>(); 
-    List<String> filesThatDoNotHaveMatchingSha1s = new ArrayList<String>(); 
+    List<String> filesThatDoNotExistInGitRevision = new ArrayList<String>();
+    List<String> filesThatDoNotHaveMatchingSha1s = new ArrayList<String>();
     List<File> sourceArchiveFiles = FileUtils.getFiles(mavenSourceArchiveDirectory, null, null);
-    for(File sourceArchiveFile : sourceArchiveFiles) {
+    for (File sourceArchiveFile : sourceArchiveFiles) {
       String baseSourceFileName = sourceArchiveFile.getCanonicalPath().substring(mavenSourceArchiveDirectory.getCanonicalPath().length() + 1);
       File gitCheckoutSourceFile = new File(gitCheckout, baseSourceFileName);
 
-      if(gitCheckoutSourceFile.exists() == false) {
+      if (gitCheckoutSourceFile.exists() == false) {
         filesThatDoNotExistInGitRevision.add(baseSourceFileName);
         continue;
       }
 
-      if(sha1sMatch(sourceArchiveFile, gitCheckoutSourceFile) == false) {
+      if (sha1sMatch(sourceArchiveFile, gitCheckoutSourceFile) == false) {
         filesThatDoNotHaveMatchingSha1s.add(baseSourceFileName);
-      }      
-    }    
-    
-    System.out.println("Files that are present in the source distribution but not in the source revision:");
-    for(String s : filesThatDoNotExistInGitRevision) {
-      System.out.println(s);
+      }
     }
-    System.out.println();
-    
-    System.out.println("Files that do not have matching sha1s:");
-    for(String s : filesThatDoNotHaveMatchingSha1s) {
-      System.out.println(s);
+
+    if (filesThatDoNotExistInGitRevision.isEmpty() == false) {
+      System.out.println("Files that are present in the source distribution but not in the source revision:");
+      for (String s : filesThatDoNotExistInGitRevision) {
+        System.out.println(s);
+      }
+      System.out.println();
+    }
+
+    if (filesThatDoNotHaveMatchingSha1s.isEmpty() == false) {
+      System.out.println("Files that do not have matching sha1s:");
+      for (String s : filesThatDoNotHaveMatchingSha1s) {
+        System.out.println(s);
+      }
     }
   }
 
   private boolean sha1sMatch(File a, File b) throws IOException {
     return sha1(a).equals(sha1(b));
   }
-  
+
   private boolean urlExists(String url) throws IOException {
     HttpURLConnection ohc = (HttpURLConnection) new URL(url).openConnection();
     ohc.setRequestMethod("HEAD");
